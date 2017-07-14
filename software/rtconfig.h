@@ -172,4 +172,6 @@
 /* RT_GDB_STUB */
 //#define RT_USING_GDB
 
+#define RT_USING_DMP
+
 #endif
