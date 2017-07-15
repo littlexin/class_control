@@ -57,7 +57,7 @@ static void gpio_udelay(rt_uint32_t us)
     volatile rt_int32_t i;
     for (; us > 0; us--)
     {
-        i = 50;
+        i = 200;
         while(i--);
     }
 }
