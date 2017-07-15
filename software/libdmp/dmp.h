@@ -2,7 +2,7 @@
 #define _DMP_H_
 
 #define MPU6050
-#define DEFAULT_MPU_HZ  			100
+#define DEFAULT_MPU_HZ  			50
 
 #define DMP_DEBUG
 #ifdef DMP_DEBUG
