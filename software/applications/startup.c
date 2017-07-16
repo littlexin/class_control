@@ -31,17 +31,6 @@ extern void finsh_system_init(void);
 extern void finsh_set_device(const char* device);
 #endif
 
-#ifdef __CC_ARM
-extern int Image$$RW_IRAM1$$ZI$$Limit;
-#define STM32_SRAM_BEGIN    (&Image$$RW_IRAM1$$ZI$$Limit)
-#elif __ICCARM__
-#pragma section="HEAP"
-#define STM32_SRAM_BEGIN    (__segment_end("HEAP"))
-#else
-extern int __bss_end;
-#define STM32_SRAM_BEGIN    (&__bss_end)
-#endif
-
 /*******************************************************************************
 * Function Name  : assert_failed
 * Description    : Reports the name of the source file and the source line number
@@ -80,7 +69,7 @@ void rtthread_startup(void)
     /* init timer system */
     rt_system_timer_init();
 
-    rt_system_heap_init((void*)STM32_SRAM_BEGIN, (void*)STM32_SRAM_END);
+//    rt_system_heap_init((void*)STM32_SRAM_BEGIN, (void*)STM32_SRAM_END);
 
     /* init scheduler system */
     rt_system_scheduler_init();
@@ -88,11 +77,11 @@ void rtthread_startup(void)
     /* init application */
     rt_application_init();
 
-#ifdef RT_USING_FINSH
-    /* init finsh */
-    finsh_system_init();
-    finsh_set_device( FINSH_DEVICE_NAME );
-#endif
+//#ifdef RT_USING_FINSH
+//    /* init finsh */
+//    finsh_system_init();
+//    finsh_set_device( FINSH_DEVICE_NAME );
+//#endif
 
     /* init timer thread */
     rt_system_timer_thread_init();

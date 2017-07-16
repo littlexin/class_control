@@ -92,10 +92,16 @@ void rt_hw_board_init()
 
     /* Configure the SysTick */
     SysTick_Configuration();
-
+	
+		rt_system_heap_init((void*)STM32_SRAM_BEGIN, (void*)STM32_SRAM_END);
+	
+#ifdef RT_USING_COMPONENTS_INIT
+		rt_components_board_init();
+#else
     stm32_hw_usart_init();
     stm32_hw_pin_init();
-    
+#endif
+	
 #ifdef RT_USING_CONSOLE
     rt_console_set_device(CONSOLE_DEVICE);
 #endif
