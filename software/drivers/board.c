@@ -96,6 +96,9 @@ void rt_hw_board_init()
     stm32_hw_usart_init();
     stm32_hw_pin_init();
     
+    extern int pwm_init(void);
+    pwm_init();
+    
 #ifdef RT_USING_CONSOLE
     rt_console_set_device(CONSOLE_DEVICE);
 #endif
