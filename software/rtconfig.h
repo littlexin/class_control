@@ -2,6 +2,9 @@
 #ifndef __RTTHREAD_CFG_H__
 #define __RTTHREAD_CFG_H__
 
+/*使用硬件定时器*/
+#define RT_USING_HWTIMER
+
 /* RT_NAME_MAX*/
 #define RT_NAME_MAX	   8
 
