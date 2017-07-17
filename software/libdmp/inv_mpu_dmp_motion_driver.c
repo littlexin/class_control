@@ -67,11 +67,11 @@
 #include <rtthread.h>
 #include "dmp.h"
 
+#define reg_int_cb      dmp_reg_int_cb
 #define i2c_write       dmp_i2c_write
 #define i2c_read        dmp_i2c_read
 #define delay_ms        dmp_delay_ms
 #define get_ms          dmp_get_ms
-#define reg_int_cb(x)
 #define min(a, b) 	    ((a < b) ? a : b)
 #define log_i           dmp_log_i
 #define log_e           dmp_log_e

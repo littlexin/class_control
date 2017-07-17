@@ -105,25 +105,30 @@ static void dmp_thread_entry(void* parameter)
     }
 }
 
-static void dmp_notify_update(void)
-{
-    rt_sem_release(&sem);
-}
-
 static void dmp_thread_init(void)
 {
     rt_thread_t tid;
 
-    rt_sem_init(&sem, "dmpsem", 0, RT_IPC_FLAG_FIFO);
-    extern void (*exti_hook)(void);
-    exti_hook = dmp_notify_update;
-    
     tid = rt_thread_create("dmp",
         dmp_thread_entry, &el,
         1024, RT_THREAD_PRIORITY_MAX - 2, 20);
 
     if (tid != RT_NULL)
         rt_thread_startup(tid);
+}
+
+static void dmp_notify_update(void)
+{
+    rt_sem_release(&sem);
+}
+
+int dmp_reg_int_cb(struct int_param_s *int_param)
+{
+    rt_sem_init(&sem, "dmpsem", 0, RT_IPC_FLAG_FIFO);
+    extern void (*exti_hook)(void);
+    exti_hook = dmp_notify_update;
+    
+    return 0;
 }
 
 void dmp_get_ms(unsigned long *cnt)
@@ -192,7 +197,7 @@ void dmp_get_eulerangle(struct euler_angle *euler)
     }
 }
 
-void dmp_sys_init(void)
+int dmp_sys_init(void)
 {
     static struct int_param_s int_param;
     static signed char orientation[9] = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
@@ -215,6 +220,8 @@ void dmp_sys_init(void)
     run_self_test();
     dmp_thread_init();
     mpu_set_dmp_state(1);
+    
+    return 0;
 }
 
 #ifdef RT_USING_FINSH

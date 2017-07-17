@@ -66,11 +66,6 @@
 //#define RT_USING_UART2
 //#define RT_USING_UART3
 
-///* Using sensor framework */
-//#define RT_USING_SENSOR
-///* Using MPU6050 */
-//#define SENSOR_USING_MPU6050
-
 /* Using I2C framework */
 #define RT_USING_I2C
 //#define RT_I2C_DEBUG
@@ -96,6 +91,8 @@
 /* Using msh style */
 #define FINSH_USING_MSH
 #define FINSH_USING_MSH_ONLY
+
+#define RT_USING_COMPONENTS_INIT
 
 /* SECTION: device filesystem */
 /* Using Device file system */

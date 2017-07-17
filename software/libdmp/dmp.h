@@ -20,6 +20,9 @@ struct euler_angle
     float yaw;
 };
 
+struct int_param_s;
+
+int  dmp_reg_int_cb(struct int_param_s *int_param);
 void dmp_get_ms(unsigned long *cnt);
 void dmp_delay_ms(unsigned long ms);
 int  dmp_i2c_write(unsigned char slave_addr, unsigned char reg_addr,
@@ -28,6 +31,6 @@ int  dmp_i2c_read(unsigned char slave_addr, unsigned char reg_addr,
      unsigned char length, unsigned char *data);
 
 void dmp_get_eulerangle(struct euler_angle *euler);
-void dmp_sys_init(void);
+int  dmp_sys_init(void);
 
 #endif  /* _DMP_H_ */

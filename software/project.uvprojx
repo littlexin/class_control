@@ -334,7 +334,7 @@
               <MiscControls>--gnu</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>applications;.;drivers;libdmp;.;Libraries\STM32F4xx_StdPeriph_Driver\inc;Libraries\CMSIS\ST\STM32F4xx\Include;Libraries\CMSIS\Include;..\..\..\..\..\RT-Thread\rt-thread\include;..\..\..\..\..\RT-Thread\rt-thread\libcpu\arm\cortex-m4;..\..\..\..\..\RT-Thread\rt-thread\libcpu\arm\common;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\finsh</IncludePath>
+              <IncludePath>applications;.;drivers;libdmp;.;Libraries\STM32F4xx_StdPeriph_Driver\inc;Libraries\CMSIS\ST\STM32F4xx\Include;Libraries\CMSIS\Include;pwm;.;..\..\..\..\..\RT-Thread\rt-thread\include;..\..\..\..\..\RT-Thread\rt-thread\libcpu\arm\cortex-m4;..\..\..\..\..\RT-Thread\rt-thread\libcpu\arm\common;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\finsh</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -367,7 +367,7 @@
             <ScatterFile></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc> --keep *.o(FSymTab)</Misc>
+            <Misc> --keep *.o(.rti_fn.*)   --keep *.o(FSymTab)</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>
@@ -421,11 +421,6 @@
               <FileName>stm32_i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>drivers\stm32_i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>pwm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\drivers\pwm.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -620,12 +615,27 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>pwm</GroupName>
+          <Files>
+            <File>
+              <FileName>pwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>pwm\pwm.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Kernel</GroupName>
           <Files>
             <File>
               <FileName>clock.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\RT-Thread\rt-thread\src\clock.c</FilePath>
+            </File>
+            <File>
+              <FileName>components.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\RT-Thread\rt-thread\src\components.c</FilePath>
             </File>
             <File>
               <FileName>device.c</FileName>

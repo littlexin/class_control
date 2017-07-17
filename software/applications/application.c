@@ -38,31 +38,20 @@ void rt_init_thread_entry(void* parameter)
     extern void rt_platform_init(void);
     
     rt_platform_init();
-    
-    /* LwIP Initialization */
-#ifdef RT_USING_LWIP
-    {
-        extern void lwip_sys_init(void);
-
-        /* register ethernetif device */
-        eth_system_device_init();
-
-        rt_hw_stm32_eth_init();
-
-        /* init lwip system */
-        lwip_sys_init();
-        rt_kprintf("TCP/IP initialized!\n");
-    }
-#endif
+	
+	rt_components_init();
 
 #ifdef RT_USING_I2C
     extern void rt_hw_i2c_init();
     
     rt_hw_i2c_init();
 #endif
-    extern void dmp_sys_init(void);
+
+#ifdef RT_USING_DMP
+    extern int dmp_sys_init(void);
     
     dmp_sys_init();
+#endif
 }
 
 int rt_application_init()
