@@ -52,6 +52,12 @@ void rt_init_thread_entry(void* parameter)
     
     dmp_sys_init();
 #endif
+
+#ifdef RT_USING_HWTIMER
+		extern int timer_device_init(void);
+		
+		timer_device_init();
+#endif
 }
 
 int rt_application_init()

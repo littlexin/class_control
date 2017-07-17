@@ -3,6 +3,10 @@
 #include "math.h"
 #include "dmp.h"
 
+#ifdef RT_USING_HWTIMER
+#include <drivers/hwtimer.h>
+#endif 
+
 //定义最大与最小脉冲频率
 #define MAX_PWM_DUTY 70    //  Hz
 
@@ -20,6 +24,24 @@ static struct pid_initstruct
 
 //函数部分
 
+int timer_device_init(void)
+{
+		rt_device_t dev;
+		rt_hwtimer_mode_t rt_hwtimer_mode_t_tmp = HWTIMER_MODE_PERIOD;
+		rt_uint32_t freq_tmp = 100000;
+	
+		/*get timer device handle*/
+    dev = rt_device_find("timer0");
+		/*open device*/
+		rt_device_open(dev, RT_DEVICE_OFLAG_RDWR);
+		/*set timer mode*/
+		rt_device_control(dev, HWTIMER_CTRL_MODE_SET, &rt_hwtimer_mode_t_tmp);
+		/*set timer period*/
+		rt_device_control(dev, HWTIMER_CTRL_FREQ_SET, &freq_tmp);
+	
+	return 0;
+}	
+	
 static int pid_init(int16_t Kp,int16_t Ki,int16_t Kd)
 {
 	pid.Set=0;

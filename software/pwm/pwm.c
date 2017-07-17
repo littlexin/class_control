@@ -2,8 +2,8 @@
 #include <rtthread.h>
 #include "board.h"
 
-#define TIM4_CNT_CLK    1000000
-#define TIM4_PWM_CLK    25000
+#define TIM4_CNT_CLK    2100000
+#define TIM4_PWM_CLK    21000
 
 uint16_t Prescaler;
 uint16_t Period;
