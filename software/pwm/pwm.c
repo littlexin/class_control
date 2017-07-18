@@ -2,24 +2,18 @@
 #include <rtthread.h>
 #include "board.h"
 
-#define TIM4_CNT_CLK    1000000
-#define TIM4_PWM_CLK    10000
+#define TIM4_CNT_CLK    2000000
+#define TIM4_PWM_CLK    20000
 
-uint16_t Prescaler;
-uint16_t Period;
-
-static void RCC_Configuration(void)
-{
-    /* TIM4 clock enable */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-
-    /* GPIOC clock enable */
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-}
+static uint16_t Prescaler;
+static uint16_t Period;
 
 static void GPIO_Configuration(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
+    
+    /* GPIOC clock enable */
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
     
     /* GPIOC Configuration: TIM4 CH1 (PD12), CH2 (PD13), CH3 (PD14), CH4 (PD15) */
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14 | GPIO_Pin_15;
@@ -40,6 +34,10 @@ static void TIM_Configuration(void)
 {
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
     TIM_OCInitTypeDef       TIM_OCInitStructure;
+    
+    /* TIM4 clock enable */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+    
     /* 
     In this example TIM4 input clock (TIM4CLK) is set to 2 * APB1 clock (PCLK1), 
     since APB1 prescaler is different from 1.   
@@ -47,9 +45,9 @@ static void TIM_Configuration(void)
     PCLK1 = HCLK / 4 
     => TIM3CLK = HCLK / 2 = SystemCoreClock /2
 
-    To get TIM4 counter clock at 1 MHz, the prescaler is computed as follows:
+    To get TIM4 counter clock at 2 MHz, the prescaler is computed as follows:
     Prescaler = (TIM3CLK / TIM4 counter clock) - 1
-    Prescaler = ((SystemCoreClock /2) /1 MHz) - 1 
+    Prescaler = ((SystemCoreClock /2) /2 MHz) - 1 
     */
     Prescaler = ((SystemCoreClock/2) / TIM4_CNT_CLK) - 1;
     Period = TIM4_CNT_CLK / TIM4_PWM_CLK - 1;
@@ -99,7 +97,6 @@ void pwm_set_duty_ratio(int channel, int ratio)
 
 int pwm_init(void)
 {
-    RCC_Configuration();
     GPIO_Configuration();
     TIM_Configuration();
     
@@ -118,18 +115,19 @@ void cmd_pwm_set_duty_ratio(int argc, char *argv[])
         
         for (i = 1; i < argc; i++)
         {
-            switch (argv[i][1])
+            switch (argv[i++][1])
             {
-                case '1':pwm_set_duty_ratio(1, atoi(argv[i + 1]));break;
-                case '2':pwm_set_duty_ratio(2, atoi(argv[i + 1]));break;
-                case '3':pwm_set_duty_ratio(3, atoi(argv[i + 1]));break;
-                case '4':pwm_set_duty_ratio(4, atoi(argv[i + 1]));break;
+                case '1': pwm_set_duty_ratio(1, atoi(argv[i]));break;
+                case '2': pwm_set_duty_ratio(2, atoi(argv[i]));break;
+                case '3': pwm_set_duty_ratio(3, atoi(argv[i]));break;
+                case '4': pwm_set_duty_ratio(4, atoi(argv[i]));break;
                 default:
                     break;
             }
-            i++;
         }
     }
+    else
+        rt_kprintf("Usage: pwm [-1 ratio] [-2 ratio] [-3 ratio] [-4 ratio]");
 }
 MSH_CMD_EXPORT_ALIAS(cmd_pwm_set_duty_ratio, pwm, set output duty ratio);
 #endif

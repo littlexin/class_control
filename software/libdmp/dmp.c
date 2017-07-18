@@ -37,7 +37,7 @@ static unsigned short inv_orientation_matrix_to_scalar(const signed char *mtx)
        ZXY  001_000_010
        ZYX  000_001_010
      */
-    scalar = inv_row_to_scaler(mtx);
+    scalar  = inv_row_to_scaler(mtx);
     scalar |= inv_row_to_scaler(mtx + 3) << 3;
     scalar |= inv_row_to_scaler(mtx + 6) << 6;
 	
