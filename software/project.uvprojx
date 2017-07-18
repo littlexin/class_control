@@ -334,7 +334,7 @@
               <MiscControls>--gnu</MiscControls>
               <Define>USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>applications;.;drivers;libdmp;.;Libraries\STM32F4xx_StdPeriph_Driver\inc;Libraries\CMSIS\ST\STM32F4xx\Include;Libraries\CMSIS\Include;pwm;.;..\..\..\..\..\RT-Thread\rt-thread\include;..\..\..\..\..\RT-Thread\rt-thread\libcpu\arm\cortex-m4;..\..\..\..\..\RT-Thread\rt-thread\libcpu\arm\common;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\finsh;.\pid</IncludePath>
+              <IncludePath>applications;.;drivers;libdmp;.;Libraries\STM32F4xx_StdPeriph_Driver\inc;Libraries\CMSIS\ST\STM32F4xx\Include;Libraries\CMSIS\Include;pid;.;pwm;.;..\..\..\..\..\RT-Thread\rt-thread\include;..\..\..\..\..\RT-Thread\rt-thread\libcpu\arm\cortex-m4;..\..\..\..\..\RT-Thread\rt-thread\libcpu\arm\common;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\drivers\include;..\..\..\..\..\RT-Thread\rt-thread\components\finsh</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -367,7 +367,7 @@
             <ScatterFile></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc>--keep *.o(.rti_fn.*)   --keep *.o(FSymTab)</Misc>
+            <Misc> --keep *.o(.rti_fn.*)   --keep *.o(FSymTab)</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>
@@ -615,22 +615,22 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>pid</GroupName>
+          <Files>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>pid\pid.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>pwm</GroupName>
           <Files>
             <File>
               <FileName>pwm.c</FileName>
               <FileType>1</FileType>
               <FilePath>pwm\pwm.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>pid</GroupName>
-          <Files>
-            <File>
-              <FileName>pid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\pid\pid.c</FilePath>
             </File>
           </Files>
         </Group>
