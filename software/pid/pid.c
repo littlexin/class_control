@@ -22,6 +22,7 @@ void pid_config(pid_t pid, float Kp, float Ki, float Kd)
     pid->err_last = 0;
     pid->err_next = 0;
     pid->integral = 0;
+    pid->out_last = 0;
     
     pid->Kp = Kp;
     pid->Ki = Ki;
@@ -58,10 +59,11 @@ float pid_incremental_ctrl(pid_t pid, float set, float actual)
     pid->set = set;
     pid->actual = actual;
     pid->err = pid->set - pid->actual;
-    output = pid->actual +
+    output = pid->out_last +
              pid->Kp * (pid->err - pid->err_next) + 
              pid->Ki * pid->err + 
              pid->Kd * (pid->err + pid->err_last - 2 * pid->err_last);
+    pid->out_last = output;
     /* set output limit */
     if (pid->omin != 0 && output < pid->omin)
         output = pid->omin;

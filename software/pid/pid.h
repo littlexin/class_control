@@ -15,6 +15,7 @@ struct pid
     float err_last;
     float err_next;
     float integral;
+    float out_last;
 };
 
 typedef struct pid *pid_t;

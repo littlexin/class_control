@@ -127,7 +127,7 @@ void cmd_pwm_set_duty_ratio(int argc, char *argv[])
         }
     }
     else
-        rt_kprintf("Usage: pwm [-1 ratio] [-2 ratio] [-3 ratio] [-4 ratio]");
+        rt_kprintf("Usage: pwm [-1 ratio] [-2 ratio] [-3 ratio] [-4 ratio]\n");
 }
 MSH_CMD_EXPORT_ALIAS(cmd_pwm_set_duty_ratio, pwm, set output duty ratio);
 #endif

@@ -387,6 +387,11 @@
               <FileType>1</FileType>
               <FilePath>applications\startup.c</FilePath>
             </File>
+            <File>
+              <FileName>wind_swing.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\applications\wind_swing.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
