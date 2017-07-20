@@ -62,7 +62,7 @@ float pid_incremental_ctrl(pid_t pid, float set, float actual)
     output = pid->out_last +
              pid->Kp * (pid->err - pid->err_next) + 
              pid->Ki * pid->err + 
-             pid->Kd * (pid->err + pid->err_last - 2 * pid->err_last);
+             pid->Kd * (pid->err + pid->err_last - 2 * pid->err_next);
     pid->out_last = output;
     /* set output limit */
     if (pid->omin != 0 && output < pid->omin)

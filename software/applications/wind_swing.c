@@ -1,13 +1,19 @@
 #include <rtthread.h>
+#include <rtdevice.h>
 #include <math.h>
 #include "pwm.h"
 #include "pid.h"
 #include "dmp.h"
 
-#define PENDULUM_CYCLE      1171        /* 1171 millisecond, rod length 0.34 meters */
+#define PENDULUM_CYCLE      1188        /* 1188 millisecond, rod length 0.35 meters */
 #define MACHINE_HEIGTH      49          /* heigth of the machine */
 #define PI                  3.14159f    /* ¦° value */
 #define RADIAN_TO_ANGLE     180 / PI    /* convert radian to angle */
+
+#define MOTOR_R1_PIN        14          /* GPIOD PIN_8 */
+#define MOTOR_R2_PIN        15          /* GPIOD PIN_9 */
+#define MOTOR_B1_PIN        39          /* GPIOD PIN_10 */
+#define MOTOR_B2_PIN        38          /* GPIOD PIN_11 */
 
 #define SAMPLE_INTERVAL     100         /* 100 millisecond */
 #define OUTPUT_LIMIT        60          /* 60% duty ratio */
@@ -27,28 +33,36 @@ static void swing_move(int duty_ratio_x, int duty_ratio_y)
     if (duty_ratio_x >= 0)
     {
         /* forward */
-        pwm_set_duty_ratio(1, 0);
+        rt_pin_write(MOTOR_R1_PIN, PIN_HIGH);       /* motor r1 backward */
+        rt_pin_write(MOTOR_R2_PIN, PIN_LOW);        /* motor r2 forward */
+        pwm_set_duty_ratio(1, 100 - duty_ratio_x);
         pwm_set_duty_ratio(2, duty_ratio_x);
     }
     else
     {
         /* backward */
+        rt_pin_write(MOTOR_R1_PIN, PIN_LOW);        /* motor r1 forward */
+        rt_pin_write(MOTOR_R2_PIN, PIN_HIGH);       /* motor r2 backward */
         pwm_set_duty_ratio(1, -duty_ratio_x);
-        pwm_set_duty_ratio(2, 0);
+        pwm_set_duty_ratio(2, 100 + duty_ratio_x);
     }
     
     /* direction y */
     if (duty_ratio_y >= 0)
     {
         /* forward */
-        pwm_set_duty_ratio(4, 0);
+        rt_pin_write(MOTOR_B1_PIN, PIN_LOW);        /* motor b1 forward */
+        rt_pin_write(MOTOR_B2_PIN, PIN_HIGH);       /* motor b2 backward */
+        pwm_set_duty_ratio(4, 100 - duty_ratio_y);
         pwm_set_duty_ratio(3, duty_ratio_y);
     }
     else
     {
         /* backward */
+        rt_pin_write(MOTOR_B1_PIN, PIN_HIGH);       /* motor b1 backward */
+        rt_pin_write(MOTOR_B2_PIN, PIN_LOW);        /* motor b2 forward */
         pwm_set_duty_ratio(4, -duty_ratio_y);
-        pwm_set_duty_ratio(3, 0);
+        pwm_set_duty_ratio(3, 100 + duty_ratio_y);
     }
 }
 
@@ -159,6 +173,12 @@ void swing_init(int mode)
     rt_timer_init(&timer, "swing_timer", swing_timer_cb, RT_NULL, 
         rt_tick_from_millisecond(SAMPLE_INTERVAL), RT_TIMER_FLAG_PERIODIC);
     rt_timer_start(&timer);
+    
+    rt_pin_mode(MOTOR_R1_PIN, PIN_MODE_OUTPUT);   /* motor r1 direction */
+    rt_pin_mode(MOTOR_R2_PIN, PIN_MODE_OUTPUT);   /* motor r2 direction */
+    rt_pin_mode(MOTOR_B1_PIN, PIN_MODE_OUTPUT);   /* motor b1 direction */
+    rt_pin_mode(MOTOR_B2_PIN, PIN_MODE_OUTPUT);   /* motor b2 direction */
+    swing_move(0, 0);
 }
 
 void swing_deinit(void)
@@ -176,6 +196,8 @@ void swing_deinit(void)
     pid_reset(pid_y);
     pid_delete(pid_x);
     pid_delete(pid_y);
+    
+    swing_move(0, 0);
 }
 
 #ifdef RT_USING_FINSH
@@ -205,7 +227,7 @@ void cmd_swing_pid(int argc, char *argv[])
         pid_config(pid_y, Kp, Ki, Kd);
     }
     else
-        rt_kprintf("Usage: swpid [-p proportional] [-i  integral] [-d derivative]\n");
+        rt_kprintf("Usage: swpid [-p kp] [-i ki] [-d kd]\n");
 }
 MSH_CMD_EXPORT_ALIAS(cmd_swing_pid, swpid, config pid value for wind swing);
 
