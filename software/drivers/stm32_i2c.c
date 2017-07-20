@@ -57,7 +57,7 @@ static void gpio_udelay(rt_uint32_t us)
     volatile rt_int32_t i;
     for (; us > 0; us--)
     {
-        i = 50;
+        i = 30;
         while(i--);
     }
 }
@@ -271,6 +271,8 @@ static rt_size_t stm32_i2c_xfer(struct rt_i2c_bus_device *bus,
             if (i)
             {
                 I2C_GenerateSTART(I2C1, ENABLE);
+                /* Test on EV5 and clear it */
+                while(!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT));
             }
             I2C_SendAddress(I2C1, msg);
             if (msg->flags & RT_I2C_RD)
@@ -315,7 +317,7 @@ static rt_size_t stm32_i2c_xfer(struct rt_i2c_bus_device *bus,
 out:
     i2c_dbg("send stop condition\n");
     I2C_GenerateSTOP(I2C1, ENABLE);
-
+    
     return ret;
 }
 
@@ -342,7 +344,7 @@ void rt_hw_i2c_init(void)
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
 
     GPIO_InitStructure.GPIO_Pin = PIN_I2C_SCL;
     GPIO_SetBits(GPIO_PORT_I2C_SCL, PIN_I2C_SCL);
@@ -352,7 +354,7 @@ void rt_hw_i2c_init(void)
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
     GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
 
     GPIO_InitStructure.GPIO_Pin = PIN_I2C_SDA;
     GPIO_SetBits(GPIO_PORT_I2C_SDA, PIN_I2C_SDA);
@@ -380,16 +382,12 @@ void rt_hw_i2c_init(void)
     RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
 
     /*!< GPIO configuration */
-    /*!< Configure sEE_I2C pins: SCL */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+    /*!< Configure sEE_I2C pins: SCL, SDA*/
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-
-    /*!< Configure sEE_I2C pins: SDA */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
     /* Connect PXx to I2C_SCL*/

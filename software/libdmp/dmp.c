@@ -37,7 +37,7 @@ static unsigned short inv_orientation_matrix_to_scalar(const signed char *mtx)
        ZXY  001_000_010
        ZYX  000_001_010
      */
-    scalar = inv_row_to_scaler(mtx);
+    scalar  = inv_row_to_scaler(mtx);
     scalar |= inv_row_to_scaler(mtx + 3) << 3;
     scalar |= inv_row_to_scaler(mtx + 6) << 6;
 	
@@ -69,7 +69,7 @@ static unsigned char run_self_test(void)
 		dmp_set_accel_bias(accel);
 		return 0;
 	}
-    else 
+    else
         return 1;
 }
 
@@ -164,7 +164,7 @@ int dmp_i2c_write(unsigned char slave_addr, unsigned char reg_addr,
     
     ret = rt_i2c_transfer(i2c_bus, msg, 2);
     
-    return (ret > 0) ? 0 : -1;
+    return (ret == 2) ? 0 : -1;
 }
 
 int dmp_i2c_read(unsigned char slave_addr, unsigned char reg_addr,
@@ -184,7 +184,7 @@ int dmp_i2c_read(unsigned char slave_addr, unsigned char reg_addr,
     
     ret = rt_i2c_transfer(i2c_bus, msg, 2);
     
-    return (ret > 0) ? 0 : -1;
+    return (ret == 2) ? 0 : -1;
 }
 
 void dmp_get_eulerangle(struct euler_angle *euler)
