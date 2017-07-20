@@ -2,10 +2,8 @@
 #include <rtthread.h>
 #include "board.h"
 
-
 #define TIM4_CNT_CLK    2000000
 #define TIM4_PWM_CLK    20000
-
 
 static uint16_t Prescaler;
 static uint16_t Period;
@@ -96,13 +94,6 @@ void pwm_set_duty_ratio(int channel, int ratio)
             break;
     }
 }
-void pwm_clear(void)
-{
-	TIM_SetCompare1(TIM4, 0);
-	TIM_SetCompare2(TIM4, 0);
-	TIM_SetCompare3(TIM4, 0);
-	TIM_SetCompare4(TIM4, 0);
-}
 
 int pwm_init(void)
 {
@@ -139,5 +130,4 @@ void cmd_pwm_set_duty_ratio(int argc, char *argv[])
         rt_kprintf("Usage: pwm [-1 ratio] [-2 ratio] [-3 ratio] [-4 ratio]\n");
 }
 MSH_CMD_EXPORT_ALIAS(cmd_pwm_set_duty_ratio, pwm, set output duty ratio);
-MSH_CMD_EXPORT_ALIAS(pwm_clear, cpwm, clear all pwm duty ratio);
 #endif

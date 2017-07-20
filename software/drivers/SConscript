@@ -24,9 +24,6 @@ if GetDepend('RT_USING_PIN'):
 if GetDepend('RT_USING_I2C') == True:
 	src += ['stm32_i2c.c']
 
-if GetDepend('RT_USING_HWTIMER') == True:
-	src += ['drv_hwtimer.c']
-	
 CPPPATH = [cwd]
 
 group = DefineGroup('Drivers', src, depend = [''], CPPPATH = CPPPATH)
