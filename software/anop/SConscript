@@ -2,10 +2,10 @@ Import('RTT_ROOT')
 Import('rtconfig')
 from building import *
 
-cwd     = os.path.join(str(Dir('#')), 'pid')
+cwd     = os.path.join(str(Dir('#')), 'anop')
 src	= Glob('*.c')
 CPPPATH = [cwd, str(Dir('#'))]
 
-group = DefineGroup('pid', src, depend = ['RT_USING_PID'], CPPPATH = CPPPATH)
+group = DefineGroup('anop', src, depend = ['RT_USING_ANOP'], CPPPATH = CPPPATH)
 
 Return('group')

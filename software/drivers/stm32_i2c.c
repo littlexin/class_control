@@ -382,7 +382,7 @@ void rt_hw_i2c_init(void)
     RCC_APB1PeriphResetCmd(RCC_APB1Periph_I2C1, DISABLE);
 
     /*!< GPIO configuration */
-    /*!< Configure sEE_I2C pins: SCL, SDA*/
+    /*!< Configure sEE_I2C pins: SCL, SDA */
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;

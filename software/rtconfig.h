@@ -12,7 +12,7 @@
 #define RT_THREAD_PRIORITY_MAX	32
 
 /* Tick per Second */
-#define RT_TICK_PER_SECOND	100
+#define RT_TICK_PER_SECOND	1000
 
 /* SECTION: RT_DEBUG */
 /* Thread Debug */
@@ -64,7 +64,7 @@
 
 #define RT_USING_UART1
 //#define RT_USING_UART2
-//#define RT_USING_UART3
+#define RT_USING_UART3
 
 /* Using I2C framework */
 #define RT_USING_I2C
@@ -170,5 +170,7 @@
 //#define RT_USING_GDB
 
 #define RT_USING_DMP
+#define RT_USING_PID
+#define RT_USING_ANOP
 
 #endif

@@ -4,19 +4,17 @@
 #include "pwm.h"
 #include "pid.h"
 #include "dmp.h"
+#ifdef RT_USING_ANOP
+#include "anop.h"
+#endif
 
-#define PENDULUM_CYCLE      1188        /* 1188 millisecond, rod length 0.35 meters */
+#define PENDULUM_CYCLE      1108        /* 1188 millisecond, rod length 0.35 meters */
 #define MACHINE_HEIGTH      49          /* heigth of the machine */
 #define PI                  3.14159f    /* ¦° value */
 #define RADIAN_TO_ANGLE     180 / PI    /* convert radian to angle */
 
-#define MOTOR_R1_PIN        14          /* GPIOD PIN_8 */
-#define MOTOR_R2_PIN        15          /* GPIOD PIN_9 */
-#define MOTOR_B1_PIN        39          /* GPIOD PIN_10 */
-#define MOTOR_B2_PIN        38          /* GPIOD PIN_11 */
-
-#define SAMPLE_INTERVAL     100         /* 100 millisecond */
-#define OUTPUT_LIMIT        60          /* 60% duty ratio */
+#define SAMPLE_INTERVAL     20          /* 20 millisecond */
+#define OUTPUT_LIMIT        85          /* 60% duty ratio */
 
 #define KP                  0
 #define KI                  0
@@ -33,36 +31,28 @@ static void swing_move(int duty_ratio_x, int duty_ratio_y)
     if (duty_ratio_x >= 0)
     {
         /* forward */
-        rt_pin_write(MOTOR_R1_PIN, PIN_HIGH);       /* motor r1 backward */
-        rt_pin_write(MOTOR_R2_PIN, PIN_LOW);        /* motor r2 forward */
-        pwm_set_duty_ratio(1, 100 - duty_ratio_x);
+        pwm_set_duty_ratio(1, 0);
         pwm_set_duty_ratio(2, duty_ratio_x);
     }
     else
     {
         /* backward */
-        rt_pin_write(MOTOR_R1_PIN, PIN_LOW);        /* motor r1 forward */
-        rt_pin_write(MOTOR_R2_PIN, PIN_HIGH);       /* motor r2 backward */
         pwm_set_duty_ratio(1, -duty_ratio_x);
-        pwm_set_duty_ratio(2, 100 + duty_ratio_x);
+        pwm_set_duty_ratio(2, 0);
     }
     
     /* direction y */
     if (duty_ratio_y >= 0)
     {
         /* forward */
-        rt_pin_write(MOTOR_B1_PIN, PIN_LOW);        /* motor b1 forward */
-        rt_pin_write(MOTOR_B2_PIN, PIN_HIGH);       /* motor b2 backward */
-        pwm_set_duty_ratio(4, 100 - duty_ratio_y);
+        pwm_set_duty_ratio(4, 0);
         pwm_set_duty_ratio(3, duty_ratio_y);
     }
     else
     {
         /* backward */
-        rt_pin_write(MOTOR_B1_PIN, PIN_HIGH);       /* motor b1 backward */
-        rt_pin_write(MOTOR_B2_PIN, PIN_LOW);        /* motor b2 forward */
         pwm_set_duty_ratio(4, -duty_ratio_y);
-        pwm_set_duty_ratio(3, 100 + duty_ratio_y);
+        pwm_set_duty_ratio(3, 0);
     }
 }
 
@@ -75,6 +65,8 @@ static void swing_mode_1(void)
     float angle;
     float set_pitch;
     float set_roll;
+		float err_pitch;
+		float err_roll;
     static rt_tick_t t = 0;
     
     while (1)
@@ -82,7 +74,7 @@ static void swing_mode_1(void)
         rt_sem_take(&sem, RT_WAITING_FOREVER);
         
         /* calculate angle amplitude */
-        angle = atan(30.0f / MACHINE_HEIGTH) * RADIAN_TO_ANGLE;
+        angle = atan(20.0f / MACHINE_HEIGTH) * RADIAN_TO_ANGLE;
         /* calculate current target radian */
         theta = t * (2 * PI / PENDULUM_CYCLE);
         /* calculate current target angle */
@@ -93,9 +85,23 @@ static void swing_mode_1(void)
         /* calculate the output duty ratio */
         duty_ratio_x = pid_incremental_ctrl(pid_x, set_pitch, el.pitch);
         duty_ratio_y = pid_incremental_ctrl(pid_y, set_roll, el.roll);
+				err_pitch = set_pitch - el.pitch;
+				err_roll  = set_roll - el.roll;
         swing_move(duty_ratio_x, duty_ratio_y);
         
         t += SAMPLE_INTERVAL;
+        
+    #ifdef RT_USING_ANOP
+        anop_upload_float(ANOP_FUNC_CUSTOM_1, &set_pitch, 1);
+        anop_upload_float(ANOP_FUNC_CUSTOM_2, &el.pitch, 1);
+        anop_upload_float(ANOP_FUNC_CUSTOM_3, &duty_ratio_x, 1);
+				anop_upload_float(ANOP_FUNC_CUSTOM_4, &err_pitch, 1);
+        
+//        anop_upload_float(ANOP_FUNC_CUSTOM_6, &set_roll, 1);
+//        anop_upload_float(ANOP_FUNC_CUSTOM_7, &el.roll, 1);
+//        anop_upload_float(ANOP_FUNC_CUSTOM_8, &duty_ratio_y, 1);
+//				anop_upload_float(ANOP_FUNC_CUSTOM_9, &err_roll, 1);
+    #endif
     }
 }
 
@@ -174,10 +180,6 @@ void swing_init(int mode)
         rt_tick_from_millisecond(SAMPLE_INTERVAL), RT_TIMER_FLAG_PERIODIC);
     rt_timer_start(&timer);
     
-    rt_pin_mode(MOTOR_R1_PIN, PIN_MODE_OUTPUT);   /* motor r1 direction */
-    rt_pin_mode(MOTOR_R2_PIN, PIN_MODE_OUTPUT);   /* motor r2 direction */
-    rt_pin_mode(MOTOR_B1_PIN, PIN_MODE_OUTPUT);   /* motor b1 direction */
-    rt_pin_mode(MOTOR_B2_PIN, PIN_MODE_OUTPUT);   /* motor b2 direction */
     swing_move(0, 0);
 }
 

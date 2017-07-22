@@ -1,6 +1,12 @@
 #ifndef _PID_H_
 #define _PID_H_
 
+#ifdef PID_DEBUG
+#define pid_log(fmt, arg...)        rt_kprintf(fmt, ##arg)
+#else
+#define pid_log(fmt, arg...)        do {} while (0)
+#endif
+
 struct pid
 {
     /* public */
